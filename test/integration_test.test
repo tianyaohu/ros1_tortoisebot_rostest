@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="tortoisebot_waypoints" type="reset_world_client.py" name="reset_world_client" />
+    <!-- <node pkg="tortoisebot_waypoints" type="rotate_robot_srv.py" name="rotate_robot_srv_node" />
+    <node pkg="tortoisebot_waypoints" type="rotate_robot_srv_client.py" name="rotate_robot_client" /> -->
+    <!-- <test test-name="rotate_robot_integration_test_v2" pkg="tortoisebot_waypoints"
+        type="rotate_robot_integration_test_v2.py" /> -->
+</launch>
