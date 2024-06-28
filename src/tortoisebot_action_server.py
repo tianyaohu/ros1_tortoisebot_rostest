@@ -56,25 +56,26 @@ class WaypointActionClass(object):
             desired_yaw = math.atan2(self._des_pos.y - self._position.y, self._des_pos.x - self._position.x)
             err_yaw = desired_yaw - self._yaw
             err_pos = math.sqrt(pow(self._des_pos.y - self._position.y, 2) + pow(self._des_pos.x - self._position.x, 2))
-            rospy.loginfo("Current Yaw: %s" % str(self._yaw))
-            rospy.loginfo("Desired Yaw: %s" % str(desired_yaw))
-            rospy.loginfo("Error Yaw: %s" % str(err_yaw))
+            
             if self._as.is_preempt_requested():
                 rospy.loginfo("The goal has been cancelled/preempted")
                 self._as.set_preempted()
                 success = False
-            elif math.fabs(err_yaw) > self._yaw_precision:
-                rospy.loginfo("fix yaw")
-                self._state = 'fix yaw'
-                twist_msg = Twist()
-                twist_msg.angular.z = 0.65 if err_yaw > 0 else -0.65
-                self._pub_cmd_vel.publish(twist_msg)
             else:
-                rospy.loginfo("go to point")
-                self._state = 'go to point'
                 twist_msg = Twist()
-                twist_msg.linear.x = 0.6
-                twist_msg.angular.z = 0
+                # Proportional controller for yaw correction with increased gain
+                angular_velocity = 1.0 * err_yaw
+                
+                # Ensure minimum angular speed for significant yaw error
+                if abs(err_yaw) > self._yaw_precision * 5:
+                    angular_velocity = max(0.6, abs(angular_velocity)) * (1 if err_yaw > 0 else -1)
+                
+                twist_msg.angular.z = angular_velocity
+
+                # Combine linear and angular movements
+                if math.fabs(err_yaw) < self._yaw_precision * 5:  # Allow some yaw error tolerance for forward movement
+                    twist_msg.linear.x = 0.2 * err_pos  # Slow down as it approaches the goal
+
                 self._pub_cmd_vel.publish(twist_msg)
 
             self._feedback.position = self._position
