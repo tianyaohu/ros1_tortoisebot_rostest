@@ -1,5 +1,15 @@
 <launch>
+    <!-- Define arguments with default values -->
+    <arg name="x" default="0.5" />
+    <arg name="y" default="0.5" />
+
+    <!-- Nodes -->
     <node pkg="tortoisebot_waypoints" type="reset_world_client.py" name="reset_world_client" />
     <node pkg="tortoisebot_waypoints" type="tortoisebot_action_server.py" name="waypoint_server" />
-    <test test-name="waypoint_goal_test" pkg="tortoisebot_waypoints" type="test_waypoint.py" />
+
+    <!-- Test node with parameters -->
+    <test test-name="waypoint_goal_test" pkg="tortoisebot_waypoints" type="test_waypoint.py">
+        <param name="x" value="$(arg x)" />
+        <param name="y" value="$(arg y)" />
+    </test>
 </launch>
