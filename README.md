@@ -16,7 +16,7 @@ Welcome to the automated testing universe of the ROS1 TortoiseBot! This reposito
 Time to get everything set up! Follow these steps:
 ```
 cd ~/simulation_ws/src
-git clone https://github.com/tianyaohu/ros2_tortoisebot_GTest.git
+git https://github.com/tianyaohu/ros1_tortoisebot_rostest.git
 git clone --branch noetic https://github.com/rigbetellabs/tortoisebot.git
 ```
 Build and source work space:
